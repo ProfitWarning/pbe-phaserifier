@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<title>Physics Body Editor Phaserifier</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<style>
+	body {
+		background:#f5f5f5;
+		max-width:700px;
+		margin:50px auto 20px auto;
+		font-family:sans-serif;
+		opacity:0.7;
+	}
+
+	textarea {
+		width:100%;
+		height:200px;
+		display:block;
+	}
+
+	button {
+		background:;
+		display:block;
+		width:120px;
+		height:50px;
+		margin:20px auto;
+	}
+
+	input {
+		margin-bottom:5px;
+	}
+
+	p {
+		padding:0;
+		margin:0;
+	}
+
+	.inline {
+		display:inline;
+	}
+
+	.col {
+		margin-top:20px;
+		width:49%;
+		display:inline-block;
+		vertical-align:top;
+	}
+</style>
+</head>
+	
+<body>
+	<div class="col">
+		<p>Physics Body Editor output file:</p><input id="fileInput" type="file">
+		<br><br>
+		<p class="inline">Width(s):</p>
+		<input id="inputWidth" class="inline">
+		<br>
+		<p class="inline">Height(s):</p>
+		<input id="inputHeight" class="inline">
+	</div>
+
+	<div class="col">
+		<p><strong>If your bodies have different image widths and/or heights, enter them in ascending order and separated with commas. First value is for the first body, second value for the second, etc.</strong>
+		</p>
+	</div>
+
+	<button onclick="phaserify();">PHASERIFY</button>
+	<textarea id="textOutput">Output</textarea>
+
+<script>
+var textData = "";
+function phaserify(){
+	var w = document.getElementById("inputWidth").value.split(","),
+		h = document.getElementById("inputHeight").value.split(",");
+
+	try {
+		var p = JSON.parse(textData), out = {};
+		for(var i=0; i<p.rigidBodies.length; i++){
+			out[p.rigidBodies[i].name] = getShapes(
+				p.rigidBodies[i].polygons,
+				parseInt(w[i] || w[0]),
+				parseInt(h[i] || w[0])
+			);
+		}
+	} catch(e){
+		alert(e);
+		return;
+	}
+
+	var s = JSON.stringify(out);
+	s = s.replace(/\{\"shape/g, "\n\{\"shape");
+	s = s.replace(/\]\,\"/g, "\n],\n\n\""); // end of figure
+	s = s.replace(/^\{\"/g, "{\n\n\""); // first line
+	s = s.replace(/\]\}$/g, "\n]\n\n}"); // last line
+
+	document.getElementById("textOutput").innerHTML = s;
+}
+
+function getShapes(polygons, w, h){
+	var out = [], arr, k;
+	for(k in polygons){
+		arr = [];
+		for(var p=polygons[k].length-1; p>=0; p--){
+			arr.push(parseInt((polygons[k][p].x*w)*10)/10);
+			arr.push(parseInt((h - polygons[k][p].y*w)*10)/10);
+		}
+		out.push({"shape":arr});
+	}
+
+	return out;
+}
+
+document.getElementById("fileInput").addEventListener("change", function(e){
+	var reader = new FileReader();
+
+	reader.onload = function(){
+		textData = reader.result;
+	};
+
+	reader.readAsText(e.target.files[0]);
+});
+</script>
+
+</body>
+</html>
