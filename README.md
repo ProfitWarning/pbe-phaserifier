@@ -1,5 +1,5 @@
 # pbe-phaserifier
-<a href="https://code.google.com/archive/p/box2d-editor/">Physics Body Editor</a> (PBE for short) is used to create physics bodies from images. The Phaserifier is a simple HTML document that takes the output file from PBE and outputs the reworked data from it. This data will be compatible with Phaser's P2 physics.
+<a href="https://code.google.com/archive/p/box2d-editor/">Physics Body Editor</a> (PBE for short) is used to create physics bodies from images. The Phaserifier is a simple HTML document that takes the output file from PBE and outputs the reworked data from it. This data will be compatible with <a href="http://phaser.io/">Phaser</a>'s P2 physics.
 
 ![Physics Body Editor](http://www.aurelienribon.com/blog/wp-content/uploads/2012/04/pbe-02.jpg)
 
